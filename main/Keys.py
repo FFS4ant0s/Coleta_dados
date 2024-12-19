@@ -1,2 +1,30 @@
-Key_Api = "b6cc18c51ad80f669f3d41f9d9a554309975a056fdcfc77d4ff94d81b79011eeb5b461129a9f4376ea32c81e56abe388854f52d25366b4bc5ed9ef93d7585204"
-Url_Api = "https://api.casadosdados.com.br/v4/cnpj/pesquisa"
+import requests
+from bs4 import BeautifulSoup
+
+
+def buscar_telefone_apontador(cnpj):
+    # URL de busca no Apontador
+    url = f'https://www.apontador.com.br/busca?q={cnpj}'
+
+    # Requisição HTTP
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        # Aqui você inspeciona a estrutura da página para encontrar o telefone
+        # Modifique conforme o site
+        telefone = soup.find('span', {'class': 'phone'})
+        if telefone:
+            return telefone.text.strip()
+        else:
+            return "Telefone não encontrado."
+    else:
+        return "Erro ao acessar o Apontador."
+
+
+# Substitua pelo CNPJ desejado
+cnpj = '12345678000195'
+telefone = buscar_telefone_apontador(cnpj)
+
+print(f'Telefone encontrado: {telefone}')
